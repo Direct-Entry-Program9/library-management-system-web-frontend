@@ -47,3 +47,4 @@ jobs:
 
       - name: Extracting the dist.zip
         run: gcloud compute ssh --zone="asia-south1-a" dep9-vm --command="sudo unzip dist.zip"
+        
