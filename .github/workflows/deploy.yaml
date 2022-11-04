@@ -43,8 +43,7 @@ jobs:
         run: gcloud compute scp --zone="asia-south1-a" dist.zip root@dep9-vm:/opt/apache/apache-tomcat-10.1.1/webapps/lms
 
       - name: Cleaning up
-        run: gcloud compute ssh --zone="asia-south1-a" dep9-vm --command="sudo rm -r /opt/apache/apache-tomcat-10.1.1/webapps/lms/css /opt/apache/apache-tomcat-10.1.1/webapps/lms/pages /opt/apache/apache-tomcat-10.1.1/webapps/lms/js /opt/apache/apache-tomcat-10.1.1/webapps/lms/index.html"
+        run: gcloud compute ssh --zone="asia-south1-a" dep9-vm--command="sudo rm -r /opt/apache/apache-tomcat-10.1.1/webapps/lms/css /opt/apache/apache-tomcat-10.1.1/webapps/lms/pages /opt/apache/apache-tomcat-10.1.1/webapps/lms/js /opt/apache/apache-tomcat-10.1.1/webapps/lms/index.html"
 
       - name: Extracting the dist.zip
-        run: gcloud compute ssh --zone="asia-south1-a" dep9-vm --command="sudo unzip dist.zip"
-        
+        run: gcloud compute ssh --zone="asia-south1-a" dep9-vm--command="sudo unzip dist.zip"
