@@ -1,0 +1,47 @@
+header ion-icon{
+    position: absolute;
+    right: 30px;
+    top: 30px;
+    font-size: 2.5rem;
+    color: rgb(25, 25, 25);
+}
+header ion-icon:hover{
+    color: rgb(128, 118, 118);
+}
+
+#tbl-books{
+    th:first-child,
+    tbody td:first-child{
+        min-width: 110px;
+        max-width: 170px;
+        word-break: keep-all;
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    
+    th:nth-child(2),
+    tbody td:nth-child(2){
+        min-width: 150px;
+        max-width: 250px;
+        background-color: red;
+    }
+    
+    th:last-child,
+    tbody td:last-child{
+        width: 150px;
+        min-width: 150px;
+        text-align: center;
+    }   
+    
+    &.empty tfoot{
+        display: table-footer-group;
+    }
+    tfoot{
+        display: none;
+    }
+    tbody tr:focus{
+        background-color: lightgrey;
+    }
+}
