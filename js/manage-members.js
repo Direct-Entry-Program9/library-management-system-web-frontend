@@ -4,7 +4,6 @@ const size = 6;
 let page = 1;
 
 getMembers();
-
 function getMembers(query=`${$('#txt-search').val()}`){
     const http = new XMLHttpRequest();
 
