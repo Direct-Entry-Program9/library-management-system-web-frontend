@@ -1,6 +1,6 @@
 // const API_END_POINT = "http://34.100.163.60:8080/lms/api";
-// const API_END_POINT = "http://34.131.127.29:8080/lms/api";
-const API_END_POINT = "http://localhost:8080/lms/api";
+const API_END_POINT = "http://34.131.127.29:8080/lms/api";
+// const API_END_POINT = "http://localhost:8080/lms/api";
 const size = 6;
 let page = 1;
 
@@ -123,7 +123,6 @@ $('#btn-new-member').click(()=>{
         $('#txt-name').focus();
     });
 
-
     frmMemberDetail.show();
 
 });
@@ -144,7 +143,6 @@ $("#btn-save").click(async ()=>{
     $("txt-name","txt-address","txt-contact").removeClass("is-invalid");
     
     if(!/^\d{3}-\d{7}$/.test(contact)){
-        console.log(contact);
         $("#txt-contact").addClass("is-invalid").select().focus();
         validated = false;
     }

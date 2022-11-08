@@ -7,12 +7,12 @@
     <title>LMS-Manage Books</title>
     <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/manage-books.css">
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-    <script src="../js/manage-books.js"></script>
+    <script defer type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script defer nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script defer src="../js/manage-books.js"></script>
 </head>
 <body class="container">
     <header>
@@ -35,12 +35,7 @@
                 </tr>
             </thead>
             <tbody class="table-group-divider">
-              <tr>
-                <td>9781837590100</td>
-                <td>The good climate finance guide for investing in locally led adaptation</td>
-                <td>Carolina Reyes</td>
-                <td>10</td>
-              </tr>
+                
             </tbody>
             <tfoot>
                 <tr>
@@ -59,5 +54,88 @@
             </ul>
         </nav>
     </main>
+    <div class="toast-container bottom-0 end-0 me-3 mb-2" >
+        <div id="toast" class="toast align-items-center text-bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Failed to reach the server. Try again...
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade edit" id="frm-book-detail" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Book Details</h1>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="txt-isbn" class="form-label">ISBN</label>
+                            <input type="text" class="form-control" id="txt-isbn" placeholder="Eg. *************">
+                            <div class="invalid-feedback">
+                                Please enter Valid ISBN.
+                            </div>
+                        </div> 
+                        <div class="mb-3">
+                            <label for="txt-title" class="form-label">Book Title</label>
+                            <input type="text" class="form-control" id="txt-title" placeholder="Eg. Management information systems">
+                            <div class="invalid-feedback">
+                                Please enter Valid Title.
+                            </div>
+                        </div>   
+                        <div class="mb-3">
+                            <label for="txt-author" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="txt-author" placeholder="Eg. Kenneth C. Laudon">
+                            <div class="invalid-feedback">
+                                Please enter Valid Name.
+                            </div>
+                        </div>   
+                        <div class="mb-3">
+                            <label for="txt-copies" class="form-label">No: of copies</label>
+                            <input type="text" class="form-control" id="txt-copies" placeholder="Eg. 5">
+                            <div class="invalid-feedback">
+                                Please enter Valid Number.
+                            </div>
+                        </div>
+                        <button class="d-none"></button>
+                    </form>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button id="btn-close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <ion-icon name="close-outline"></ion-icon>
+                        Close
+                    </button>
+                    <button id="btn-edit" type="button" class="btn btn-primary">
+                        <ion-icon name="create-outline"></ion-icon>
+                        Edit Details
+                    </button>
+                    <button id="btn-save" type="button" class="btn btn-primary d-none">
+                        <ion-icon name="create-outline"></ion-icon>
+                        Save
+                    </button>
+                    <div id="edit-buttons-wrapper" class="d-none">
+                        <!-- <button id="btn-delete" type="button" class="btn btn-danger">
+                            <ion-icon name="trash-bin-outline"></ion-icon>
+                            Delete
+                        </button> -->
+                        <button id="btn-update" type="button" class="btn btn-success">
+                            <ion-icon name="save-outline"></ion-icon>
+                            Update
+                        </button>                
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="overlay" class="d-flex d-none justify-content-center align-items-center flex-column">
+        <div id="overlay-loader">
+            <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        </div>
+        <h2>Please Wait...</h2>
+    </div>
 </body>
 </html>
