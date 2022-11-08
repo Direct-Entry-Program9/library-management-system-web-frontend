@@ -314,3 +314,55 @@ $('#btn-delete').click(async ()=>{
         $("#overlay").addClass("d-none");
     }
 });
+
+$('#btn-update').click(async ()=>{
+    $("#overlay").removeClass("d-none");
+    const name = $("#txt-name").val();
+    const address = $("#txt-address").val();
+    const contact = $("#txt-contact").val();
+
+    let validated = true;
+    
+    $("txt-name","txt-address","txt-contact").removeClass("is-invalid");
+    
+    if(!/^\d{3}-\d{7}$/.test(contact)){
+        console.log(contact);
+        $("#txt-contact").addClass("is-invalid").select().focus();
+        validated = false;
+    }
+
+    if(!/^[A-Za-z0-9#|,./\-:; ]+$/.test(address)){
+        $("#txt-address").addClass('is-invalid').select().focus();
+        validated = false;
+    }
+
+    if(!/^[A-Za-z ]+$/.test(name)){
+        $("#txt-name").addClass('is-invalid').select().focus();
+        validated = false;
+    }
+
+    if(!validated) return;
+
+    try{
+        const response = await fetch(`${API_END_POINT}/members/${$('#txt-id').val()}`,
+            {
+                method: 'PATCH',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify({
+                    id: $('#txt-id').val(),name, address, contact
+                })
+            });
+
+        if(response.status === 204){
+            showToast('Member has been update successfully','success')
+        }else{
+            throw new Error(response.status);
+        }
+    }catch(error){
+        showToast("Failed to update member, Try Again!",'error');
+    }finally{
+        $("#overlay").addClass("d-none");
+    }
+});

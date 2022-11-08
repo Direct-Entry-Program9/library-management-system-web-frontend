@@ -1,5 +1,5 @@
 name: "CI/CD Pipeline for LMS Front-End"
-on:
+on: 
   push:
     branches:
       - main
@@ -7,52 +7,51 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      UPLOAD_DIR: /opt/apache/apache-tomcat-10.1.1/webapps/lms
 
     steps:
-      - name: Checking out the repo
+      - name: Checking out the latest version from the repository
         uses: actions/checkout@v3
 
-      - name: Installing Node JS
+      - name: Installing the Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Installing SASS
+      - name: Installing the SASS
         run: npm i -g sass
 
-      - name: Compiling SCSS Files to CSS
+      - name: Compiling .scss files to .css
         run: sass scss:css
 
-      - name: Zipping to deploy
-        run: zip -r dist.zip css pages js index.html
+      - name: Zipping everything to deploy
+        run: zip -r dist.zip css js pages index.html
 
-      - name: 'Authenticate to Google Cloud'
+      - name: 'Authenticate to the GCP'
         uses: 'google-github-actions/auth@v0'
         with:
-          credentials_json: '${{ secrets.SERVICE_ACCOUNT_PRIVATE_KEY }}'
+          credentials_json: '${{ secrets.SERVICE_ACCOUNT_PRIVATE_KEY }}'        
 
-      - name: 'Setting up gcloud'
+      - name: 'Setting up the gcloud'
         uses: 'google-github-actions/setup-gcloud@v0'
 
-      - name: 'Deploying the zip'
-        run: gcloud compute scp --zone="asia-south2-a" dist.zip root@dep-vm:/opt/apache/apache-tomcat-10.1.1/webapps/lms
-
-      - name: Clean up old stuff
+      - name: Cleaning up the old stuff
         run: >
-          gcloud compute ssh --zone="asia-south2-a" dep-vm
-          --command="sudo rm -rf /opt/apache/apache-tomcat-10.1.1/webapps/lms/css 
-          /opt/apache/apache-tomcat-10.1.1/webapps/lms/pages 
-          /opt/apache/apache-tomcat-10.1.1/webapps/lms/js 
-          /opt/apache/apache-tomcat-10.1.1/webapps/lms/index.html
-          "
-
-      - name: Extracting the zip
+          gcloud compute ssh --zone="asia-south1-a" dep-9-vm 
+          --command="sudo rm -rf $UPLOAD_DIR"
+      - name: Creating a new directory for the deployment
         run: >
-          gcloud compute ssh --zone="asia-south2-a" dep-vm 
-          --command="sudo unzip /opt/apache/apache-tomcat-10.1.1/webapps/lms/dist.zip -d /opt/apache/apache-tomcat-10.1.1/webapps/lms"
+          gcloud compute ssh --zone="asia-south1-a" dep-9-vm 
+          --command="sudo mkdir $UPLOAD_DIR"
+      - name: 'Deploying the dist.zip'
+        run: gcloud compute scp --zone="asia-south1-a" dist.zip root@dep-9-vm:$UPLOAD_DIR
 
+      - name: Exploding the dist.zip
+        run: > 
+          gcloud compute ssh --zone="asia-south1-a" dep-9-vm 
+          --command="sudo unzip $UPLOAD_DIR/dist.zip -d $UPLOAD_DIR"
       - name: Cleaning left overs
         run: >
-          gcloud compute ssh --zone="asia-south2-a" dep-vm 
-          --command="sudo rm /opt/apache/apache-tomcat-10.1.1/webapps/lms/dist.zip"
-          
+          gcloud compute ssh --zone="asia-south1-a" dep-9-vm 
+          --command="sudo rm $UPLOAD_DIR/dist.zip"
