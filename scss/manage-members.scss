@@ -44,6 +44,9 @@ header ion-icon:hover{
     tbody tr:focus{
         background-color: lightgrey;
     }
+    tbody tr{
+      cursor: pointer;
+    }
 }
 
 #loader{
