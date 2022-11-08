@@ -38,20 +38,20 @@ jobs:
 
       - name: Cleaning up the old stuff
         run: >
-          gcloud compute ssh --zone="asia-south1-a" dep-9-vm 
+          gcloud compute ssh --zone="asia-south2-a" dep-vm 
           --command="sudo rm -rf $UPLOAD_DIR"
       - name: Creating a new directory for the deployment
         run: >
-          gcloud compute ssh --zone="asia-south1-a" dep-9-vm 
+          gcloud compute ssh --zone="asia-south2-a" dep-vm 
           --command="sudo mkdir $UPLOAD_DIR"
       - name: 'Deploying the dist.zip'
-        run: gcloud compute scp --zone="asia-south1-a" dist.zip root@dep-9-vm:$UPLOAD_DIR
+        run: gcloud compute scp --zone="asia-south2-a" dist.zip root@dep-vm:$UPLOAD_DIR
 
       - name: Exploding the dist.zip
         run: > 
-          gcloud compute ssh --zone="asia-south1-a" dep-9-vm 
+          gcloud compute ssh --zone="asia-south2-a" dep-vm 
           --command="sudo unzip $UPLOAD_DIR/dist.zip -d $UPLOAD_DIR"
       - name: Cleaning left overs
         run: >
-          gcloud compute ssh --zone="asia-south1-a" dep-9-vm 
+          gcloud compute ssh --zone="asia-south2-a" dep-vm 
           --command="sudo rm $UPLOAD_DIR/dist.zip"
