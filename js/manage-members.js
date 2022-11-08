@@ -1,10 +1,10 @@
 // const API_END_POINT = "http://34.100.163.60:8080/lms/api";
-const API_END_POINT = "http://34.131.127.29:8080/lms/api";
+// const API_END_POINT = "http://34.131.127.29:8080/lms/api";
+const API_END_POINT = "http://localhost:8080/lms/api";
 const size = 6;
 let page = 1;
 
 getMembers();
-
 function getMembers(query=`${$('#txt-search').val()}`){
     const http = new XMLHttpRequest();
 
@@ -46,6 +46,11 @@ function getMembers(query=`${$('#txt-search').val()}`){
 function initPagination(totalMembers){
     const totalPages = Math.ceil(totalMembers/size);
 
+    if(page > totalPages) {
+        page = totalPages;
+        getMembers();
+        return;
+    }
     if(totalPages <=1){
         $("#pagination").addClass('d-none');
     }else{
@@ -111,10 +116,14 @@ $(document).keydown((eventData)=>{
 
 $('#btn-new-member').click(()=>{
     const frmMemberDetail = new bootstrap.Modal(document.getElementById('frm-member-detail'));
-    $('#frm-member-detail').addClass('new')
+    $('#txt-id, #txt-name, #txt-contact, #txt-address').attr('disabled',false).val('');
+
+    $('#frm-member-detail').removeClass('edit').addClass('new')
     .on('shown.bs.modal',()=>{
         $('#txt-name').focus();
     });
+
+
     frmMemberDetail.show();
 
 });
@@ -217,4 +226,143 @@ function showToast(msg, msgType = 'warning'){
 
 $("#frm-member-detail").on("hidden.bs.modal",()=>{
     getMembers();
+});
+
+$('#tbl-members tbody').click(({target})=>{
+    if (!target) return;
+
+    let rowElm = target.closest('tr');
+    // if (target instanceof HTMLTableRowElement){
+    //     rowElm = target;
+    // }else if (target instanceof HTMLTableCellElement){
+    //     rowElm = target.parentElement;
+    // }else{
+    //     return;
+    // }
+
+    getMemberDetails($(rowElm.cells[0]).text());
+});
+
+async function getMemberDetails(memberID){
+    try{
+        const response = await fetch(`${API_END_POINT}/members/${memberID}`);
+        if(response.ok){
+            const member = await response.json();
+
+            const frmMemberDetail = new bootstrap.Modal(document.getElementById('frm-member-detail'));
+            $('#frm-member-detail').removeClass('new').removeClass('edit');
+
+            $('#txt-id').attr('disabled','true').val(member.id);
+            $('#txt-name').attr('disabled','true').val(member.name);
+            $('#txt-address').attr('disabled','true').val(member.address);
+            $('#txt-contact').attr('disabled','true').val(member.contact);
+
+            frmMemberDetail.show();
+
+        }else{
+            throw new Error(response.status);
+        }
+    }catch(error){
+        showToast('Failed to fetch the member details');
+    }
+    // const http = new XMLHttpRequest();
+
+    // http.addEventListener('readystatechange',()=>{
+    //     if (http.readyState === http.DONE){
+    //         if(http.status === 200){
+
+    //             const member = JSON.parse(http.responseText);
+
+    //             const frmMemberDetail = new bootstrap.Modal(document.getElementById('frm-member-detail'));
+    //             $('#frm-member-detail').removeClass('new')
+                
+    //             $('#txt-id').attr('disabled','true').val(member.id);
+    //             $('#txt-name').attr('disabled','true').val(member.name);
+    //             $('#txt-address').attr('disabled','true').val(member.address);
+    //             $('#txt-contact').attr('disabled','true').val(member.contact);
+
+    //             frmMemberDetail.show();
+    //         }else{
+    //             showToast('Failed to fetch the member details');
+    //         }
+    //     }
+    // });
+
+    // http.open('GET',`${API_END_POINT}/members/${memberID}`,true);
+
+    // http.send();
+}
+
+$('#btn-edit').click(()=>{
+    $('#frm-member-detail').addClass('edit');
+    $('#txt-name, #txt-contact, #txt-address').attr('disabled',false);
+});
+
+$('#btn-delete').click(async ()=>{
+    $("#overlay").removeClass("d-none");
+    try{
+        const response = await fetch(`${API_END_POINT}/members/${$('#txt-id').val()}`,{method: 'DELETE'});
+        if(response.status === 204){
+            showToast('Member has been deleted successfully','success');
+            $('#btn-close').click();
+        }else{
+            throw new Error(response.status)
+        }
+    }catch(error){
+        showToast("Failed to delete member try Again, try again!");
+    }finally{
+        $("#overlay").addClass("d-none");
+    }
+});
+
+$('#btn-update').click(async ()=>{
+    $("#overlay").removeClass("d-none");
+    const name = $("#txt-name").val();
+    const address = $("#txt-address").val();
+    const contact = $("#txt-contact").val();
+
+    let validated = true;
+    
+    $("txt-name","txt-address","txt-contact").removeClass("is-invalid");
+    
+    if(!/^\d{3}-\d{7}$/.test(contact)){
+        console.log(contact);
+        $("#txt-contact").addClass("is-invalid").select().focus();
+        validated = false;
+    }
+
+    if(!/^[A-Za-z0-9#|,./\-:; ]+$/.test(address)){
+        $("#txt-address").addClass('is-invalid').select().focus();
+        validated = false;
+    }
+
+    if(!/^[A-Za-z ]+$/.test(name)){
+        $("#txt-name").addClass('is-invalid').select().focus();
+        validated = false;
+    }
+
+    if(!validated) return;
+
+    try{
+        const response = await fetch(`${API_END_POINT}/members/${$('#txt-id').val()}`,
+            {
+                method: 'PATCH',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify({
+                    id: $('#txt-id').val(),name, address, contact
+                })
+            });
+
+        if(response.status === 204){
+            showToast('Member has been update successfully','success')
+        }else{
+            throw new Error(response.status);
+        }
+    }catch(error){
+        showToast("Failed to update member, Try Again!",'error');
+    }finally{
+        $("#overlay").addClass("d-none");
+    }
 });
