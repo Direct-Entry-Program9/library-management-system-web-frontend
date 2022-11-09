@@ -234,7 +234,8 @@ async function getBookDetails(bookISBN){
 
 $('#btn-edit').click(()=>{
     $('#frm-book-detail').addClass('edit');
-    $('#txt-isbn, #txt-title, #txt-author, #txt-copies').attr('disabled',false);
+    $('#txt-title, #txt-author, #txt-copies').attr('disabled',false);
+    $('#txt-title').focus();
 });
 
 $('#btn-update').click(async ()=>{
