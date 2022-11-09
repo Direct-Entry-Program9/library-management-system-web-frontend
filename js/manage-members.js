@@ -1,4 +1,3 @@
-// const API_END_POINT = "http://34.100.163.60:8080/lms/api";
 const API_END_POINT = "http://34.131.127.29:8080/lms/api";
 // const API_END_POINT = "http://localhost:8080/lms/api";
 const size = 6;
